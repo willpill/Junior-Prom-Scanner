@@ -16,6 +16,8 @@
 		302769BA2AEDE02700B33074 /* JPromScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302769B92AEDE02700B33074 /* JPromScannerTests.swift */; };
 		302769C42AEDE02700B33074 /* JPromScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302769C32AEDE02700B33074 /* JPromScannerUITests.swift */; };
 		302769C62AEDE02700B33074 /* JPromScannerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302769C52AEDE02700B33074 /* JPromScannerUITestsLaunchTests.swift */; };
+		302769D32AEDE79200B33074 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302769D22AEDE79200B33074 /* CameraController.swift */; };
+		306FBA192AEF0AD000799B43 /* ScanningLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306FBA182AEF0AD000799B43 /* ScanningLineView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,8 @@
 		302769BF2AEDE02700B33074 /* JPromScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JPromScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		302769C32AEDE02700B33074 /* JPromScannerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPromScannerUITests.swift; sourceTree = "<group>"; };
 		302769C52AEDE02700B33074 /* JPromScannerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPromScannerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		302769D22AEDE79200B33074 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		306FBA182AEF0AD000799B43 /* ScanningLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningLineView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +106,8 @@
 			children = (
 				302769A12AEDE02500B33074 /* JPromScannerApp.swift */,
 				302769A32AEDE02500B33074 /* ContentView.swift */,
+				302769D22AEDE79200B33074 /* CameraController.swift */,
+				306FBA182AEF0AD000799B43 /* ScanningLineView.swift */,
 				302769A52AEDE02600B33074 /* Assets.xcassets */,
 				302769AA2AEDE02600B33074 /* Persistence.swift */,
 				302769AF2AEDE02600B33074 /* JPromScanner.entitlements */,
@@ -270,7 +276,9 @@
 				302769AB2AEDE02600B33074 /* Persistence.swift in Sources */,
 				302769A42AEDE02500B33074 /* ContentView.swift in Sources */,
 				302769A22AEDE02500B33074 /* JPromScannerApp.swift in Sources */,
+				306FBA192AEF0AD000799B43 /* ScanningLineView.swift in Sources */,
 				302769AE2AEDE02600B33074 /* JPromScanner.xcdatamodeld in Sources */,
+				302769D32AEDE79200B33074 /* CameraController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +447,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = JPromScanner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Scanner;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -470,6 +480,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = JPromScanner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Scanner;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

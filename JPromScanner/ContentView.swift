@@ -6,80 +6,139 @@
 //
 
 import SwiftUI
-import CoreData
+import AVFoundation
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
+    @State private var cameraUpdateTrigger: Bool = false
+    @State private var barcode: String = "Place Barcode in View to Scan"
+    @ObservedObject var cameraController = CameraController()
+    
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        VStack {
+            displayBarcodeImage()
+            
+            Spacer()
+            
+            VStack(alignment: .center) {
+                CameraViewWrapper(cameraController: cameraController, updateTrigger: $cameraUpdateTrigger, barcode: $barcode)
+                    .frame(maxHeight: 300)
+                    .cornerRadius(25)
+                
+                Spacer().frame(height: 17)
+                
+                displayActions()
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
+            .animation(.easeInOut(duration: 0.3), value: barcode)
+            
+            Spacer()
+            
+            Text(barcode).font(.headline)
+        }
+        .padding(25)
+        .preferredColorScheme(.dark)
+        .onAppear(perform: resetBarcodeOnAppear)
+        .onChange(of: cameraController.barcodeString, perform: handleBarcodeChange)
+    }
+    
+    func displayBarcodeImage() -> some View {
+        Group {
+            Image(systemName: (barcode == "Place Barcode in View to Scan") ? "barcode.viewfinder" : "checkmark")
+                .contentTransition(.symbolEffect(.replace))
+                .font(.title)
+            
         }
     }
+    
+    func displayActions() -> some View {
+        Group {
+            if barcode != "Place Barcode in View to Scan" {
+                Button {
+                    restartCameraSession()
+                } label: {
+                    HStack {
+                        Text("Admit Now")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "person")
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .cornerRadius(20)
+                .controlSize(.large)
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+                Spacer().frame(height: 15)
 
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                Button {
+                    restartCameraSession()
+                } label: {
+                    HStack {
+                        Text("Ignore")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "minus")
+                    }
+                }
+                .buttonStyle(.bordered)
+                .cornerRadius(20)
+                .controlSize(.large)
+            } else {
+                EmptyView()
             }
         }
     }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+    
+    func restartCameraSession() {
+        DispatchQueue.main.async {
+            self.cameraController.captureSession.stopRunning()
+            self.cameraController.resetBarcode()
+            self.cameraUpdateTrigger.toggle()
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.5) {
+                self.cameraController.captureSession.startRunning()
+            }
+        }
+    }
+    
+    func resetBarcodeOnAppear() {
+        cameraController.barcodeString = "Place Barcode in View to Scan"
+    }
+    
+    func handleBarcodeChange(newBarcode: String?) {
+        if let newBarcode = newBarcode {
+            barcode = newBarcode
+            if cameraController.captureSession?.isRunning == true {
+                cameraController.captureSession.stopRunning()
             }
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
+struct CameraViewWrapper: View {
+    let cameraController: CameraController
+    @Binding var updateTrigger: Bool
+    @Binding var barcode: String
+
+    var body: some View {
+        ZStack {
+            CameraView(cameraController: cameraController, updateTrigger: $updateTrigger)
+            if barcode == "Place Barcode in View to Scan" {
+                ScanningLineView()
+            }
+        }
+    }
+}
+
+struct CameraView: UIViewRepresentable {
+    let cameraController: CameraController
+    @Binding var updateTrigger: Bool
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.cameraController.startCamera(view)
+        }
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {}
+}
 
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
