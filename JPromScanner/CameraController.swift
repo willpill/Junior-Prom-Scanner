@@ -47,7 +47,11 @@ class CameraController: NSObject, ObservableObject, AVCaptureMetadataOutputObjec
         for metadata in metadataObjects {
             if let readableObject = metadata as? AVMetadataMachineReadableCodeObject,
                let value = readableObject.stringValue {
-                barcodeString = value
+                if value.count != 16 {
+                    barcodeString = "Invalid Ticket"
+                } else {
+                    barcodeString = value
+                }
                 break
             }
         }

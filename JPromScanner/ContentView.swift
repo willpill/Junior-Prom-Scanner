@@ -42,8 +42,9 @@ struct ContentView: View {
     
     func displayBarcodeImage() -> some View {
         Group {
-            Image(systemName: (barcode == "Place Barcode in View to Scan") ? "barcode.viewfinder" : "checkmark")
+            Image(systemName: (barcode == "Place Barcode in View to Scan") ? "barcode.viewfinder" : "ticket")
                 .contentTransition(.symbolEffect(.replace))
+                .foregroundColor((barcode == "Place Barcode in View to Scan") ? .white : (barcode == "Invalid Ticket") ? .red : .green )
                 .font(.title)
             
         }
@@ -51,7 +52,7 @@ struct ContentView: View {
     
     func displayActions() -> some View {
         Group {
-            if barcode != "Place Barcode in View to Scan" {
+            if barcode != "Place Barcode in View to Scan" && barcode != "Invalid Ticket" {
                 Button {
                     restartCameraSession()
                 } label: {
@@ -64,9 +65,9 @@ struct ContentView: View {
                 .buttonStyle(.borderedProminent)
                 .cornerRadius(20)
                 .controlSize(.large)
-
+                
                 Spacer().frame(height: 15)
-
+                
                 Button {
                     restartCameraSession()
                 } label: {
@@ -80,6 +81,20 @@ struct ContentView: View {
                 .cornerRadius(20)
                 .controlSize(.large)
             } else {
+                if barcode == "Invalid Ticket" {
+                    Button {
+                        restartCameraSession()
+                    } label: {
+                        HStack {
+                            Text("Scan Again")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "arrow.circlepath")
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .cornerRadius(20)
+                    .controlSize(.large)
+                }
                 EmptyView()
             }
         }
@@ -114,7 +129,7 @@ struct CameraViewWrapper: View {
     let cameraController: CameraController
     @Binding var updateTrigger: Bool
     @Binding var barcode: String
-
+    
     var body: some View {
         ZStack {
             CameraView(cameraController: cameraController, updateTrigger: $updateTrigger)

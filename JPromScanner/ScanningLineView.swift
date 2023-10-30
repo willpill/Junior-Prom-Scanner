@@ -13,7 +13,7 @@ struct ScanningLineView: View {
     var body: some View {
         GeometryReader { geometry in
             Color.white.opacity(0.5)
-                .frame(width: geometry.size.width, height: 1) // Adjust the height to your desired thickness
+                .frame(width: geometry.size.width, height: 1)
                 .offset(y: yOffset * geometry.size.height)
                 .animation(
                     Animation.easeInOut(duration: 2)

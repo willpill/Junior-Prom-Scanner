@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>We will need to access your camera... to scan</string>
+	<string>I need to access your camera to do the scanning.</string>
 </dict>
 </plist>
